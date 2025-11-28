@@ -15,7 +15,7 @@ void dfs(int s)
     for(int i=0; i<vec[s].size(); i++)
     {
         int v=vec[s][i];
-        cout<<v <<" ";
+        //cout<<v <<" ";
         dfs(v);
     }
 }
