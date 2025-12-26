@@ -11,7 +11,8 @@ int tsp(int mask, int pos)
     if (mask == (1 << n) - 1)
         return dist[pos][0];
 
-        if(dp[mask][pos] != -1) return dp[mask][pos];
+        if(dp[mask][pos] != -1) 
+        return dp[mask][pos];
 
     int ans = INT_MAX;
     

@@ -3,15 +3,15 @@ using namespace std;
 
 const int INF = 1e9;
 
-int distanc[105][105]; // distance matrix
-int parent[105][105];  // parent matrix for path printing
+int distanc[105][105];
+int parent[105][105];
 
 int main()
 {
   int n, e;
   cin >> n >> e;
 
-  // Initialize
+  // Initialize matrices
   for (int i = 1; i <= n; i++)
   {
     for (int j = 1; j <= n; j++)
@@ -30,37 +30,40 @@ int main()
   {
     int a, b, w;
     cin >> a >> b >> w;
+
     distanc[a][b] = w;
-    parent[a][b] = a; // parent for path reconstruction
+    parent[a][b] = a; // direct parent
   }
 
-  // Floyd–Warshall core
+  // Floyd–Warshall algorithm
   for (int k = 1; k <= n; k++)
   {
     for (int i = 1; i <= n; i++)
     {
       for (int j = 1; j <= n; j++)
       {
+
         if (distanc[i][k] + distanc[k][j] < distanc[i][j])
         {
           distanc[i][j] = distanc[i][k] + distanc[k][j];
+          // Use predecessor from k->j so reconstruction yields full path
           parent[i][j] = parent[k][j];
         }
       }
     }
   }
 
-  // Check negative cycle
+  // Detect negative cycle
   for (int i = 1; i <= n; i++)
   {
     if (distanc[i][i] < 0)
     {
-      cout << "Negative cycle detected!" << endl;
+      cout << "Negative Cycle detected!" << endl;
       return 0;
     }
   }
 
-  // Print all-pair shortest distance
+  // Print Distance Matrix
   cout << "\nAll-Pairs Shortest Distance Matrix:\n";
   for (int i = 1; i <= n; i++)
   {
@@ -74,9 +77,9 @@ int main()
     cout << endl;
   }
 
-  // Path query
+  // Query for a path
   int s, d;
-  cout << "\nEnter source and destination: ";
+  // Removed interactive prompt to keep output judge-friendly
   cin >> s >> d;
 
   if (distanc[s][d] == INF)
@@ -88,21 +91,26 @@ int main()
   cout << "Shortest distance from " << s << " to " << d << " is: "
        << distanc[s][d] << endl;
 
-  // Path printing
+  // Path reconstruction
   vector<int> path;
-  int end = d;
+  int cur = d;
 
-  while (end != s)
+  while (cur != s)
   {
-    path.push_back(end);
-    end = parent[s][end];
-    if (end == -1)
-      break;
+    path.push_back(cur);
+    cur = parent[s][cur];
+
+    if (cur == -1)
+    {
+      cout << "Path reconstruction failed!" << endl;
+      return 0;
+    }
   }
   path.push_back(s);
 
   reverse(path.begin(), path.end());
 
+  // Print path
   cout << "Path: ";
   for (int x : path)
     cout << x << " ";
